@@ -17,60 +17,10 @@ namespace InternetShop.DAL.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("ProductVersion", "6.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("InternetShop.DAL.Entities.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Likes")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("Comment");
-                });
-
-            modelBuilder.Entity("InternetShop.DAL.Entities.Group", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Groups");
-                });
 
             modelBuilder.Entity("InternetShop.DAL.Entities.Image", b =>
                 {
@@ -158,16 +108,27 @@ namespace InternetShop.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Brand")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("GroupId")
+                    b.Property<int>("BrandId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullSize")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("NewPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -175,35 +136,19 @@ namespace InternetShop.DAL.Migrations
                     b.Property<int>("QuantityInStock")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
 
-                    b.HasIndex("GroupId");
+                    b.Property<string>("Season")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Size")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("InternetShop.DAL.Entities.Rating", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("Rating");
                 });
 
             modelBuilder.Entity("InternetShop.DAL.Entities.User", b =>
@@ -238,17 +183,6 @@ namespace InternetShop.DAL.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("InternetShop.DAL.Entities.Comment", b =>
-                {
-                    b.HasOne("InternetShop.DAL.Entities.Product", "Product")
-                        .WithMany("Comments")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("InternetShop.DAL.Entities.Image", b =>
                 {
                     b.HasOne("InternetShop.DAL.Entities.Product", "Product")
@@ -277,28 +211,6 @@ namespace InternetShop.DAL.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("InternetShop.DAL.Entities.Product", b =>
-                {
-                    b.HasOne("InternetShop.DAL.Entities.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-                });
-
-            modelBuilder.Entity("InternetShop.DAL.Entities.Rating", b =>
-                {
-                    b.HasOne("InternetShop.DAL.Entities.Product", "Product")
-                        .WithMany("Rating")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("InternetShop.DAL.Entities.Order", b =>
                 {
                     b.Navigation("Details");
@@ -306,11 +218,7 @@ namespace InternetShop.DAL.Migrations
 
             modelBuilder.Entity("InternetShop.DAL.Entities.Product", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("Images");
-
-                    b.Navigation("Rating");
                 });
 #pragma warning restore 612, 618
         }

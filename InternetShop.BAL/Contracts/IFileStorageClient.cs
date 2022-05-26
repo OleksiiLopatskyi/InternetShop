@@ -10,7 +10,7 @@ namespace InternetShop.BAL.Contracts
 {
     public interface IFileStorageClient<T> where T : Result
     {
-        Task<T> SendAsync(HttpClient httpClient, MultipartFormDataContent form);
-        Task<T> UploadAsync(IFormFileCollection files);
+/*        Task<T> SendAsync(HttpClient httpClient, MultipartFormDataContent form);
+*/        Task<T> UploadAsync(IEnumerable<IFormFile> files);
     }
 }

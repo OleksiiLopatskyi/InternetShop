@@ -7,11 +7,8 @@ namespace InternetShop.API.Validation.Order
     {
         public OrderValidator()
         {
-            RuleFor(p => p.Receiver).NotNull();
             RuleFor(o => o.Products).NotNull();
             RuleForEach(o => o.Products).SetValidator(new OrderProductValidator());
-            RuleFor(o => o.Date).NotNull().SetValidator(new OrderDateValidator());
-            RuleFor(o=>o.Receiver).NotNull().SetValidator(new OrderReceiverValidator());
             When(p => p.Products != null, () =>
               {
                   RuleFor(p => p.Products)

@@ -53,16 +53,27 @@ namespace InternetShop.DAL.Extensions
         public static IQueryable<Product> Filter(this IQueryable<Product> query,
             ProductSearchParameters productSearchParameters)
         {
-            if (productSearchParameters.Name != null)
+
+            if (productSearchParameters.Sizes != null)
             {
-                query = query.Where(p => p.Name == productSearchParameters.Name);
+                string[] sizes = productSearchParameters.Sizes.Split(",");
+                query = query.Where(p => sizes.Contains(p.Size.ToString()));
             }
-            if (productSearchParameters.PriceStartRange != null &&
-                productSearchParameters.PriceEndRange != null)
+            if (productSearchParameters.Search != null)
             {
-                query = query.Where(p => p.Price >= productSearchParameters.PriceStartRange
-                && p.Price <= productSearchParameters.PriceEndRange);
+                query = query.Where(p => p.Name.ToLower().Contains(productSearchParameters.Search.ToLower()));
             }
+            if (productSearchParameters.Seasons != null)
+            {
+                string[] seasons = productSearchParameters.Seasons.Split(",");
+                query = query.Where(p => seasons.Contains(p.Season));
+            }
+            if (productSearchParameters.Brands != null)
+            {
+                string[] brands = productSearchParameters.Brands.Split(",");
+                query = query.Where(p => brands.Contains(p.Brand));
+            }
+            
             return query;
         }
 

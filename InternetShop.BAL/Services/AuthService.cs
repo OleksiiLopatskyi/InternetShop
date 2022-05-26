@@ -37,15 +37,16 @@ namespace InternetShop.BAL.AuthService
                     StatusCode = StatusCodes.BadRequest
                 };
             }
-            bool verifyPassword = BCrypt.Net.BCrypt.Verify(password, user.Password);
-            if (!verifyPassword)
+
+            var verify = BCrypt.Net.BCrypt.Verify(password, user.Password);
+            if (!verify)
             {
                 return new Result<string>
                 {
-                    Message = "Invalid login or password",
-                    StatusCode = StatusCodes.BadRequest
+                    Message = "Invalid login or password"
                 };
             }
+            
             return new Result<string>
             {
                 Data = GenerateToken(user),
@@ -99,9 +100,9 @@ namespace InternetShop.BAL.AuthService
                     new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role.ToString()),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Id.ToString()),
+                    new Claim("Id", user.Id.ToString()),
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(10),
+                Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);

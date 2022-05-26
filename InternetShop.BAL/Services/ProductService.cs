@@ -8,7 +8,6 @@ using InternetShop.BAL.DTOs.Rating;
 using InternetShop.DAL.Entities;
 using Microsoft.AspNetCore.Http;
 using StatusCodes = InternetShop.BAL.Models.StatusCodes;
-using InternetShop.DAL.QueryParams;
 
 namespace InternetShop.BAL.Services.ProductService
 {
@@ -21,22 +20,26 @@ namespace InternetShop.BAL.Services.ProductService
             _repositoryWrapper = repositoryWrapper;
             _imageUploader = imageUploader;
         }
-        public async Task<Result<IEnumerable<Product>>> GetProductsAsync(
+        public async Task<PaginatedResult<Product>> GetProductsAsync(
             ProductSearchParameters searchParameters,
             SortingParameters sortingParameters,
             PaginationParameters pagingParameters)
         {
             try
             {
-                var paginatedResult = await _repositoryWrapper.ProductRepository
+                var products = await _repositoryWrapper.ProductRepository
                     .FindAllAsync(searchParameters,
                     sortingParameters,
                     pagingParameters);
-                return new Result<IEnumerable<Product>> { Data = paginatedResult };
+                return new PaginatedResult<Product>
+                {
+                    Items = products,
+                    Total = products.Count,
+                };
             }
             catch (Exception ex)
             {
-                return new Result<IEnumerable<Product>>
+                return new PaginatedResult<Product>
                 {
                     Message = ex.Message,
                     StatusCode = StatusCodes.InternalServerError
@@ -106,9 +109,7 @@ namespace InternetShop.BAL.Services.ProductService
             {
                 var product = await _repositoryWrapper.ProductRepository
                     .FindEntityAsync(i => i.Id == productId,
-                    ProductProperties.Comments,
-                    ProductProperties.Images,
-                    ProductProperties.Rating);
+                    ProductProperties.Images);
                 if (product == null)
                 {
                     return new Result<Product>
@@ -171,8 +172,7 @@ namespace InternetShop.BAL.Services.ProductService
             try
             {
                 var product = await _repositoryWrapper.ProductRepository
-                    .FindEntityAsync(p => p.Id == ratingDto.ProductId,
-                    ProductProperties.Rating);
+                    .FindEntityAsync(p => p.Id == ratingDto.ProductId);
                 if (product == null)
                 {
                     return new Result
@@ -181,11 +181,6 @@ namespace InternetShop.BAL.Services.ProductService
                         StatusCode = StatusCodes.NotFound
                     };
                 }
-                var rating = new Rating
-                {
-                    UserId = ratingDto.UserId,
-                    Count = ratingDto.StarsCount
-                };
                 _repositoryWrapper.ProductRepository.Update(product);
                 await _repositoryWrapper.SaveAsync();
                 return new Result<Product> { Data = product };
@@ -193,6 +188,27 @@ namespace InternetShop.BAL.Services.ProductService
             catch (Exception ex)
             {
                 return new Result
+                {
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.InternalServerError
+                };
+            }
+        }
+
+        public async Task<Result<IEnumerable<double>>> GetSizesAsync()
+        {
+            try
+            {
+                var products = await _repositoryWrapper.ProductRepository.FindAllAsync();
+                var sizes = products.Select(i => i.Size).Distinct();
+                return new Result<IEnumerable<double>>
+                {
+                    Data = sizes
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result<IEnumerable<double>>
                 {
                     Message = ex.Message,
                     StatusCode = StatusCodes.InternalServerError

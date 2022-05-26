@@ -15,7 +15,7 @@ namespace InternetShop.DAL.Repository
         {
         }
 
-        public async Task<IEnumerable<Order>> FindAllAsync(OrderSearchParameters searchParameters,
+        public async Task<PaginatedList<Order>> FindAllAsync(OrderSearchParameters searchParameters,
             SortingParameters sortingParameters,
             PaginationParameters pagingParameters)
         {
@@ -24,7 +24,13 @@ namespace InternetShop.DAL.Repository
             return await PaginatedList<Order>.CreateAsync(query,
                 pagingParameters.PageNumber, pagingParameters.PageSize);
         }
-
+        public async Task<PaginatedList<Order>> FindByConditionAsync(Expression<Func<Order,bool>> expression,
+            PaginationParameters pagingParameters)
+        {
+            IQueryable<Order> query = DataContext.Set<Order>().Where(expression);
+            return await PaginatedList<Order>.CreateAsync(query,
+                pagingParameters.PageNumber, pagingParameters.PageSize);
+        }
         public override async Task<Order> FindEntityAsync(Expression<Func<Order, bool>> expression)
         {
             return await DataContext.Set<Order>().Include(i => i.Details).FirstOrDefaultAsync(expression);

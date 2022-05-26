@@ -1,10 +1,4 @@
 ﻿using InternetShop.DAL.Entities;
-using InternetShop.DAL.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using InternetShop.BAL.Extensions;
 using InternetShop.BAL.DTOs.Order;
 using InternetShop.BAL.Builders.Interfaces;
 
@@ -17,17 +11,24 @@ namespace InternetShop.BAL.Builders.Implementations
         public OrderBuilder()
         {
             _order = new Order();
+            _order.Details = new List<OrderDetail>();
         }
 
         public Order Build()
         {
-            CalculatePrice();
             return _order;
         }
 
-        public IOrderBuilder WithDetails(IEnumerable<OrderProductDTO> details)
+        public IOrderBuilder WithDate()
         {
-            foreach (var item in details)
+            _order.Date = DateTime.Now;
+            _order.ReceiveDate = DateTime.Now.AddHours(2);
+            return this;
+        }
+
+        public IOrderBuilder WithDetails(OrderDTO dto)
+        {
+            foreach (var item in dto.Products)
             {
                 var detail = new OrderDetail
                 {
@@ -36,21 +37,15 @@ namespace InternetShop.BAL.Builders.Implementations
                 };
                 _order.Details.Add(detail);
             }
+            _order.TotalPrice = dto.TotalPrice;
             return this;
         }
 
-        public IOrderBuilder Map(OrderDTO dto)
+        public IOrderBuilder WithUser(User user)
         {
-            _order.ReceiverEmail = dto.Receiver.Email;
-            _order.ReceiverName = dto.Receiver.Name;
-            _order.Date = dto.Date.OrderDate;
-            _order.ReceiveDate = dto.Date.ReceiveDate;
+            _order.ReceiverEmail = user.Email;
+            _order.ReceiverName = $"{user.FirstName} {user.LastName}";
             return this;
-        }
-
-        private void CalculatePrice()
-        {
-            _order.TotalPrice = _order.Details.Sum(o => o.Product.Price * o.Count);
         }
     }
 }

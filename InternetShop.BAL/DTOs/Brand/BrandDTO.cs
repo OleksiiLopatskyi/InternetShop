@@ -5,11 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InternetShop.BAL.DTOs.Group
+namespace InternetShop.BAL.DTOs.Brand
 {
-    public class GroupDTO
+    public class BrandDTO
     {
         public string Name { get; set; }
-        public string Description { get; set; }
     }
 }

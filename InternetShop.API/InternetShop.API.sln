@@ -9,10 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InternetShop.DAL", "..\Inte
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InternetShop.BAL", "..\InternetShop.BAL\InternetShop.BAL.csproj", "{49688EC5-4FAB-4ADF-A902-EF28747C9FB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.API", "..\FileStorage.API\FileStorage.API.csproj", "{F8CF4E46-42D8-445B-AB51-2EA07D1A3294}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorage.BAL", "..\FileStorage.BAL\FileStorage.BAL.csproj", "{3A9E156C-F64D-4195-93F3-F633336CBB4A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,14 +27,6 @@ Global
 		{49688EC5-4FAB-4ADF-A902-EF28747C9FB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49688EC5-4FAB-4ADF-A902-EF28747C9FB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49688EC5-4FAB-4ADF-A902-EF28747C9FB2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F8CF4E46-42D8-445B-AB51-2EA07D1A3294}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F8CF4E46-42D8-445B-AB51-2EA07D1A3294}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F8CF4E46-42D8-445B-AB51-2EA07D1A3294}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F8CF4E46-42D8-445B-AB51-2EA07D1A3294}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3A9E156C-F64D-4195-93F3-F633336CBB4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3A9E156C-F64D-4195-93F3-F633336CBB4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3A9E156C-F64D-4195-93F3-F633336CBB4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3A9E156C-F64D-4195-93F3-F633336CBB4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

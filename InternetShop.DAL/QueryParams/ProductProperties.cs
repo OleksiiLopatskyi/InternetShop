@@ -9,9 +9,6 @@ namespace InternetShop.DAL.QueryParams
     public enum ProductProperties
     {
         None,
-        Group,
-        Rating,
         Images,
-        Comments
     }
 }

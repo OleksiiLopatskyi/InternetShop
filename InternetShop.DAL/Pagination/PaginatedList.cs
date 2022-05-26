@@ -15,9 +15,11 @@ namespace InternetShop.DAL.Pagination
         {
             PageIndex = pageIndex;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-
+            Count = count;
             this.AddRange(items);
         }
+
+        public int Count { get; private set; }
 
         public bool HasPreviousPage => PageIndex > 1;
 

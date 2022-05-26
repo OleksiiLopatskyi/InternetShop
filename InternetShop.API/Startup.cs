@@ -4,6 +4,7 @@ using InternetShop.DAL.DataContext;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using System.Text.Json.Serialization;
 
 namespace InternetShop.API
 {
@@ -24,17 +25,19 @@ namespace InternetShop.API
             services.ConfigureSwagger();
             services.ConfigureJWT(Configuration);
             services.ConfigureHttpClient();
-            services.Configure<FileStorageOptions>(Configuration
-                .GetSection(FileStorageOptions.FileStorageAPI));
+            services.Configure<FirebaseOptions>(Configuration
+                .GetSection(FirebaseOptions.FileStorageAPI));
             services.Configure<JwtOptions>(Configuration
                 .GetSection(JwtOptions.JwtSection));
             services.ConfigureServices();
 
             services.AddControllers().AddFluentValidation(options =>
             {
-                options.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+                options.DisableDataAnnotationsValidation = true;
                 options.RegisterValidatorsFromAssemblyContaining<Startup>();
-            });
+            }).AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
             services.AddCors();
         }
 

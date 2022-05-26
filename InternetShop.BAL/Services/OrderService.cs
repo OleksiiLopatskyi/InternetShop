@@ -22,7 +22,7 @@ namespace InternetShop.BAL.Services.OrderService
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public async Task<Result<IEnumerable<Order>>> GetOrdersAsync(OrderSearchParameters searchParameters,
+        public async Task<PaginatedResult<Order>> GetOrdersAsync(OrderSearchParameters searchParameters,
             SortingParameters sortingParameters,
             PaginationParameters pagingParameters)
         {
@@ -30,11 +30,15 @@ namespace InternetShop.BAL.Services.OrderService
             {
                 var orders = await _repositoryWrapper.OrderRepository
                     .FindAllAsync(searchParameters, sortingParameters, pagingParameters);
-                return new Result<IEnumerable<Order>> { Data = orders };
+                return new PaginatedResult<Order>
+                {
+                    Items = orders,
+                    Total = orders.Count
+                };
             }
             catch (Exception ex)
             {
-                return new Result<IEnumerable<Order>>
+                return new PaginatedResult<Order>
                 {
                     Message = ex.Message,
                     StatusCode = StatusCodes.InternalServerError
@@ -68,15 +72,31 @@ namespace InternetShop.BAL.Services.OrderService
             }
         }
 
-        public async Task<Result> CreateAsync(OrderDTO orderDto)
+        public async Task<Result> CreateAsync(int userId, OrderDTO orderDto)
         {
             try
             {
+                var user = await _repositoryWrapper.UserRepository.FindEntityAsync(u => u.Id == userId);
                 var order = new OrderBuilder()
-                .Map(orderDto)
-                .WithDetails(orderDto.Products)
-                .Build();
+                    .WithDate()
+                    .WithUser(user)
+                    .WithDetails(orderDto)
+                    .Build();
                 await _repositoryWrapper.OrderRepository.CreateAsync(order);
+                foreach (var product in orderDto.Products)
+                {
+                    var foundProduct = await _repositoryWrapper.ProductRepository
+                        .FindEntityAsync(p => p.Id == product.ProductId);
+                    if (product.Count > foundProduct.QuantityInStock)
+                    {
+                        return new Result
+                        {
+                            Message = "Недостатня кількість на складі",
+                            StatusCode = StatusCodes.BadRequest
+                        };
+                    }
+                    foundProduct.QuantityInStock -= product.Count;
+                }
                 await _repositoryWrapper.SaveAsync();
                 return new Result<Order> { Data = order };
             }
@@ -105,8 +125,7 @@ namespace InternetShop.BAL.Services.OrderService
                     };
                 }
                 var updatedOrder = new OrderBuilder()
-                    .Map(orderDto)
-                    .WithDetails(orderDto.Products)
+                    .WithDetails(orderDto)
                     .Build();
                 _repositoryWrapper.OrderRepository.Update(updatedOrder);
                 await _repositoryWrapper.SaveAsync();
@@ -143,6 +162,29 @@ namespace InternetShop.BAL.Services.OrderService
             catch (Exception ex)
             {
                 return new Result
+                {
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.InternalServerError
+                };
+            }
+        }
+
+        public async Task<PaginatedResult<Order>> GetUserOrdersAsync(int userId,PaginationParameters paginationParameters)
+        {
+            try
+            {
+                var user = await _repositoryWrapper.UserRepository.FindEntityAsync(u => u.Id == userId);
+                var orders = await _repositoryWrapper.OrderRepository
+                    .FindByConditionAsync(o => o.ReceiverEmail == user.Email,paginationParameters);
+                return new PaginatedResult<Order>
+                {
+                    Total = orders.Count,
+                    Items = orders
+                };
+            }
+            catch (Exception ex)
+            {
+                return new PaginatedResult<Order>
                 {
                     Message = ex.Message,
                     StatusCode = StatusCodes.InternalServerError

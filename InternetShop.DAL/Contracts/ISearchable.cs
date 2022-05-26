@@ -1,11 +1,12 @@
 ﻿
+using InternetShop.DAL.Pagination;
 using InternetShop.DAL.QueryParams;
 
 namespace InternetShop.DAL.Contracts
 {
     public interface ISearchable<TEntity, TSearchParameter>
     {
-        public Task<IEnumerable<TEntity>> FindAllAsync(TSearchParameter searchParameter,
+        public Task<PaginatedList<TEntity>> FindAllAsync(TSearchParameter searchParameter,
             SortingParameters sortingParameters,
             PaginationParameters pagingParameters);
     }

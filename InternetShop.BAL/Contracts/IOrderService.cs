@@ -7,11 +7,12 @@ namespace InternetShop.BAL.Contracts
 {
     public interface IOrderService
     {
-        Task<Result<IEnumerable<Order>>> GetOrdersAsync(OrderSearchParameters searchParametersParameters,
+        Task<PaginatedResult<Order>> GetOrdersAsync(OrderSearchParameters searchParametersParameters,
             SortingParameters sortingParameters,
             PaginationParameters pagingParameters);
+        Task<PaginatedResult<Order>> GetUserOrdersAsync(int userId,PaginationParameters paginationParameters);
         Task<Result<Order>> GetByIdAsync(int orderId);
-        Task<Result> CreateAsync(OrderDTO orderDto);
+        Task<Result> CreateAsync(int userId, OrderDTO orderDto);
         Task<Result> UpdateAsync(int orderId, OrderDTO orderDto);
         Task<Result> DeleteAsync(int orderId);
     }

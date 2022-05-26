@@ -10,8 +10,9 @@ namespace InternetShop.BAL.Builders.Interfaces
 {
     public interface IOrderBuilder
     {
-        IOrderBuilder Map(OrderDTO order);
-        IOrderBuilder WithDetails(IEnumerable<OrderProductDTO> details);
+        IOrderBuilder WithDetails(OrderDTO dto);
+        IOrderBuilder WithDate();
+        IOrderBuilder WithUser(User user);
         Order Build();
     }
 }

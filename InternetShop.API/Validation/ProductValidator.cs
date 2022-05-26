@@ -9,10 +9,10 @@ namespace InternetShop.API.Validation
         public ProductValidator()
         {
             RuleFor(p => p.Name).NotEmpty().Length(1, 20);
-            RuleFor(p => p.Description).NotEmpty().Length(1, 20);
+            RuleFor(p => p.Description).NotEmpty().Length(1, 100);
             RuleFor(p => p.Price).GreaterThan(0).LessThan(999999);
             RuleFor(p => p.QuantityInStock).GreaterThan(0).LessThan(999999);
-            RuleFor(p => p.GroupId).GreaterThan(0);
+            RuleFor(p => p.Brand).NotNull().NotEmpty();
             RuleFor(p => p.Images).NotNull();
             When(p => p.Images != null, () =>
             {

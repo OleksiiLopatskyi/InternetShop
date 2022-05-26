@@ -46,7 +46,7 @@ namespace InternetShop.DAL.Repository
 
         public async Task<IEnumerable<TEntity>> FindByConditionAsync(Expression<Func<TEntity, bool>> expression)
         {
-            return await DataContext.Set<TEntity>().Where(expression).AsNoTracking().ToListAsync();
+            return await DataContext.Set<TEntity>().Where(expression).ToListAsync();
         }
 
         public virtual async Task<TEntity> FindEntityAsync(Expression<Func<TEntity, bool>> expression)

@@ -10,10 +10,8 @@ namespace InternetShop.DAL.Contracts
     {
         IUserRepository UserRepository { get; }
         IProductRepository ProductRepository { get; }
-        IGroupRepository GroupRepository { get; }
         IOrderRepository OrderRepository { get; }
         IDetailRepository DetailRepository { get; }
-        ICommentRepository CommentRepository { get; }
         Task SaveAsync();
         void Save();
     }

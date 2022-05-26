@@ -29,8 +29,7 @@ namespace InternetShop.API.Controllers
             return CustomResult(result);
         }
 
-        [RoleAuthorize(Role = Role.User)]
-        [RoleAuthorize(Role = Role.Admin)]
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProduct(int id)
         {
@@ -68,5 +67,6 @@ namespace InternetShop.API.Controllers
             var result = await _productService.CreateRating(model);
             return CustomResult(result);
         }
+
     }
 }

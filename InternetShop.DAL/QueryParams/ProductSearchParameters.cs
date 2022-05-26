@@ -8,8 +8,9 @@ namespace InternetShop.DAL.QueryParams
 {
     public class ProductSearchParameters
     {
-        public string? Name { get; set; }
-        public decimal? PriceStartRange { get; set; }
-        public decimal? PriceEndRange { get; set; }
+        public string? Sizes { get; set; }
+        public string? Seasons { get; set; }
+        public string? Brands { get; set; }
+        public string? Search { get; set; }
     }
 }

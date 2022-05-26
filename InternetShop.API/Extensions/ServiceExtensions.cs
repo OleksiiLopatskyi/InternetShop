@@ -59,9 +59,9 @@ namespace InternetShop.API.Extensions
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IOrderService, OrderService>();
-            services.AddTransient<IGroupService, GroupService>();
-            services.AddTransient<ICommentService, CommentService>();
+            services.AddTransient<IBrandService, BrandService>();
             services.AddTransient<IImageUploader, ImageUploader>();
+            services.AddTransient<ISeasonsService, SeasonsService>();
             services.AddTransient<IOrderDetailService, OrderDetailService>();
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
         }

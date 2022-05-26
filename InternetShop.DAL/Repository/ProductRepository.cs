@@ -6,8 +6,7 @@ using InternetShop.DAL.Extensions;
 using InternetShop.DAL.Pagination;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Reflection;
-using InternetShop.DAL.QueryParams;
+
 
 namespace InternetShop.DAL.Repository
 {
@@ -17,11 +16,11 @@ namespace InternetShop.DAL.Repository
         {
         }
 
-        public async Task<IEnumerable<Product>> FindAllAsync(ProductSearchParameters searchParameters,
+        public async Task<PaginatedList<Product>> FindAllAsync(ProductSearchParameters searchParameters,
             SortingParameters sortingParameters, PaginationParameters pagingParameters)
         {
-            IQueryable<Product> products = DataContext.Products;
-            products.Sort(sortingParameters).Filter(searchParameters);
+            IQueryable<Product> products = DataContext.Products.Include(i=>i.Images);
+            products = products.Sort(sortingParameters).Filter(searchParameters);
             return await PaginatedList<Product>
                 .CreateAsync(products, pagingParameters.PageNumber, pagingParameters.PageSize);
         }
@@ -37,17 +36,8 @@ namespace InternetShop.DAL.Repository
                     case ProductProperties.None:
                         products = DataContext.Products;
                         break;
-                    case ProductProperties.Rating:
-                        products = products.Include(p => p.Rating);
-                        break;
-                    case ProductProperties.Group:
-                        products = products.Include(p => p.Group);
-                        break;
                     case ProductProperties.Images:
                         products = products.Include(p => p.Images);
-                        break;
-                    case ProductProperties.Comments:
-                        products = products.Include(p => p.Comments);
                         break;
                 }
             }

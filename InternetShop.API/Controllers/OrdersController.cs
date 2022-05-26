@@ -7,22 +7,23 @@ using InternetShop.API.Validation;
 
 namespace InternetShop.API.Controllers
 {
-    [Route("api/orders")]
+    [Route("api/")]
     [ApiController]
     public class OrdersController : CustomControllerBase
     {
         private readonly IOrderService _orderService;
+        private const string ORDERS_ENDPOINT = "orders";
 
         public OrdersController(IOrderService orderService)
         {
             _orderService = orderService;
         }
 
-        [RoleAuthorize(Role = Role.Admin)]
-        [HttpGet]
-        public async Task<IActionResult> GetAllOrders([FromQuery]PaginationParameters pagingParameters,
-            [FromQuery]SortingParameters sortingParameters,
-            [FromQuery]OrderSearchParameters searchParameters)
+        
+        [HttpGet(ORDERS_ENDPOINT)]
+        public async Task<IActionResult> GetAllOrders([FromQuery] PaginationParameters pagingParameters,
+            [FromQuery] SortingParameters sortingParameters,
+            [FromQuery] OrderSearchParameters searchParameters)
         {
             var result = await _orderService
                 .GetOrdersAsync(searchParameters, sortingParameters, pagingParameters);
@@ -30,7 +31,7 @@ namespace InternetShop.API.Controllers
         }
 
         [RoleAuthorize(Role = Role.Admin)]
-        [HttpGet("{id}")]
+        [HttpGet(ORDERS_ENDPOINT+"/{id}")]
         public async Task<IActionResult> GetOrder(int id)
         {
             var result = await _orderService.GetByIdAsync(id);
@@ -38,27 +39,31 @@ namespace InternetShop.API.Controllers
         }
 
         [RoleAuthorize(Role = Role.User)]
-        [HttpPost]
+        [HttpPost(ORDERS_ENDPOINT)]
         public async Task<IActionResult> CreateOrder([FromBody] OrderDTO model)
         {
-            var result = await _orderService.CreateAsync(model);
+            var result = await _orderService.CreateAsync(GetUserId(), model);
+            return CustomResult(result);
+        }
+
+        [RoleAuthorize(Role = Role.User)]
+        [HttpGet("user/"+ORDERS_ENDPOINT)]
+        public async Task<IActionResult> GetUserOrders([FromQuery]PaginationParameters paginationParameters)
+        {
+            var result = await _orderService.GetUserOrdersAsync(GetUserId(),paginationParameters);
             return CustomResult(result);
         }
 
         [RoleAuthorize(Role = Role.Admin)]
-        [HttpPut("{id}")]
+        [HttpPut(ORDERS_ENDPOINT+"/{id}")]
         public async Task<IActionResult> UpdateOrder(int id, [FromBody] OrderDTO model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var result = await _orderService.UpdateAsync(id, model);
             return CustomResult(result);
         }
 
         [RoleAuthorize(Role = Role.Admin)]
-        [HttpDelete("{id}")]
+        [HttpDelete(ORDERS_ENDPOINT+"/{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
             var result = await _orderService.DeleteAsync(id);

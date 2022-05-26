@@ -1,6 +1,5 @@
 ﻿using InternetShop.BAL.Builders.Interfaces;
 using InternetShop.BAL.DTOs.Product;
-using InternetShop.BAL.Extensions;
 using InternetShop.DAL.Contracts;
 using InternetShop.DAL.Entities;
 using Microsoft.AspNetCore.Http;
@@ -20,10 +19,14 @@ namespace InternetShop.BAL.Builders.Implementations
         public IProductBuilder Map(ProductDTO dto)
         {
             _product.Name = dto.Name;
-            _product.Description = dto.Description;
+            _product.Brand = dto.Brand;
+            _product.FullSize = dto.FullSize;
+            _product.Size = dto.Size;
+            _product.Season = dto.Season;
+            _product.Color = dto.Color;
+            _product.Rating = 0;
             _product.Price = dto.Price;
             _product.QuantityInStock = dto.QuantityInStock;
-            _product.GroupId = dto.GroupId;
             return this;
         }
 
